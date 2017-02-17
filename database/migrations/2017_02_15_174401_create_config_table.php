@@ -17,6 +17,7 @@ class CreateConfigTable extends Migration
             $table->string('key')->comment('配置名');
             $table->text('value')->comment('值');
             $table->text('remarks')->nullable()->comment('备注');
+            $table->boolean('status')->default(true)->comment('是否启用配置，0：禁用，1：启用');
             $table->timestamps();
         });
     }

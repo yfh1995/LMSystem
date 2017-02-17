@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBookTypeTable extends Migration
+class CreateBooksTypeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,11 @@ class CreateBookTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('book_type', function (Blueprint $table) {
+        Schema::create('books_type', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type_name')->comment('分类名字');
             $table->integer('parent_id')->default(0)->comment('父分类id');
+            $table->integer('sort')->comment('排序');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateBookTypeTable extends Migration
      */
     public function down()
     {
-        Schema::drop('book_type');
+        Schema::drop('books_type');
     }
 }

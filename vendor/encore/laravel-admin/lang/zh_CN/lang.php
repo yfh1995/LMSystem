@@ -50,4 +50,18 @@ return [
     'parent_id'     => '父ID',
     'icon'          => '图标',
     'uri'           => '路径',
+
+    'books_type'    => '图书分类',
+    'type_name'     => '类型名称',
+
+    'books'             => '书籍',
+    'book_number'       => '编号',
+    'classification'    => '分类',
+    'book_name'         => '书名',
+    'press'             => '出版社',
+    'publication_year'  => '出版年份',
+    'author'            => '作者',
+    'price'             => '价格',
+    'cur_total'         => '在存量',
+    'total'             => '总量'
 ];

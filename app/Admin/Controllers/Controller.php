@@ -13,14 +13,33 @@ use Illuminate\Http\Request;
 
 class Controller extends \App\Http\Controllers\Controller{
 
-
+    protected $configs;
 
     public function __construct(Request $request) {
 
-        $config = $this->getConfig();
+        $this->getConfig();
     }
 
+    //获取系统配置
     public function getConfig(){
 
+        $config = DB::table('config')->get();
+        $config = $this->object_array($config);
+
+        foreach ($config as $v) {
+           $this->configs[$v['key']] = json_decode($v['value']);
+        }
+
+    }
+
+    public function object_array($array) {
+        if(is_object($array)) {
+            $array = (array)$array;
+        } if(is_array($array)) {
+            foreach($array as $key=>$value) {
+                $array[$key] = $this->object_array($value);
+            }
+        }
+        return $array;
     }
 }

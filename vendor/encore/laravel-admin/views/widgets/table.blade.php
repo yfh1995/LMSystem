@@ -16,3 +16,6 @@
     @endforeach
     </tbody>
 </table>
+@if(isset($page)&&$page)
+    {!! $page->render() !!}
+@endif

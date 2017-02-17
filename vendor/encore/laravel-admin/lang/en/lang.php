@@ -50,4 +50,18 @@ return [
     'parent_id'     => 'Parent ID',
     'icon'          => 'Icon',
     'uri'           => 'URI',
+
+    'books_type'    => 'Books Type',
+    'type_name'     => 'Type Name',
+
+    'books'             => 'Books',
+    'book_number'       => 'Book Number',
+    'classification'    => 'Classification',
+    'book_name'         => 'Book Name',
+    'press'             => 'Press',
+    'publication_year'  => 'Publication Year',
+    'author'            => 'Author',
+    'price'             => 'Price',
+    'cur_total'         => 'Cur Total',
+    'total'             => 'Total'
 ];
