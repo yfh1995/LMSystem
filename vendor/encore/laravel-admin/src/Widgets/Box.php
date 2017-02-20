@@ -64,7 +64,7 @@ class Box extends Widget implements Renderable
         $str .= '</select></div><div class="col-sm-5" style="padding-left:0px;">';
         $str .= '<input id="'.$search_id.'" type="text" name="book_number" value="'.(isset($params['book_number'])?$params['book_number']:"").'" placeholder="'.trans('admin::lang.book_number').'" style="height:30px;color:black;">';
         $str .= '</div><div class="col-sm-2" style="padding-left:0px;">';
-        $str .= '<a class="btn btn-warning" href="/admin/books/create">创建</a>';
+        $str .= '<a class="btn btn-warning" href="'.$params['path'].'/create">创建</a>';
         $str .= '</div></div>';
 
         $this->attributes['tools'][] =  $str;
@@ -78,20 +78,21 @@ class Box extends Widget implements Renderable
     public function buildupScript(){
         $select_id = $this->toolsParams['select_id'];
         $search_id = $this->toolsParams['search_id'];
+        $path = $this->toolsParams['params']['path'];
 
         return <<<SCRIPT
 
         $('#$select_id').change(function(){
             var type_id = $('#$select_id option:selected') .val();
             var book_number = $('#$search_id') .val();
-            window.location.href = '/admin/books?type_id=' + type_id + '&book_number=' + book_number;
+            window.location.href = '$path?type_id=' + type_id + '&book_number=' + book_number;
         });
 
         $('#$search_id').keyup(function(e){
 			if(e.keyCode === 13){
                 var type_id = $('#$select_id option:selected') .val();
                 var book_number = $('#$search_id') .val();
-                window.location.href = '/admin/books?type_id=' + type_id + '&book_number=' + book_number;
+                window.location.href = '$path?type_id=' + type_id + '&book_number=' + book_number;
 			}
 		});
 

@@ -64,5 +64,10 @@ return [
     'price'             => '价格',
     'cur_total'         => '在存量',
     'total'             => '总量',
-    'operation'         => '操作'
+    'operation'         => '操作',
+
+    'borrow'        => '借阅',
+    'end_time'      => '截止时间',
+    'id_number'     => '证件号码',
+    'borrow_status' => '租借状态',
 ];

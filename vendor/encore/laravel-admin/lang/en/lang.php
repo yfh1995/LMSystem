@@ -64,5 +64,10 @@ return [
     'price'             => 'Price',
     'cur_total'         => 'Cur Total',
     'total'             => 'Total',
-    'operation'         => 'Operation'
+    'operation'         => 'Operation',
+
+    'borrow'        => 'Borrow',
+    'end_time'      => 'End Time',
+    'id_number'     => 'Id Number',
+    'borrow_status' => 'Borrow Status',
 ];

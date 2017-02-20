@@ -19,19 +19,23 @@ $router->group(['middleware' => 'admin.auth'],function($router){
     //==========                     ======================
     //=====================================================
 
-    //书籍管理
     $router->resources([
-        'books' =>  'BooksController'
-    ]);
-//    //书籍列表
-//    $router->get('/books/index','BooksController@index');
-//    //删除书籍
-//    $router->get('/books/delete','BooksController@delete');
-
-    //图书分类管理
-    $router->resources([
+        //图书管理
+        'books'     =>  'BooksController',
+        //图书分类管理
         'booksType' =>  'BooksTypeController'
     ]);
 
+    //图书借阅管理
+    //借阅列表
+    $router->get('borrow','BorrowController@index');
+    //跳转至创建借阅记录页面
+    $router->get('borrow/create','BorrowController@create');
+    //创建借阅记录
+    $router->post('borrow','BorrowController@store');
+    //归还图书
+    $router->get('borrow/return','BorrowController@returnBook');
+    //赔偿图书
+    $router->get('borrow/compensate','BorrowController@compensate');
 });
 

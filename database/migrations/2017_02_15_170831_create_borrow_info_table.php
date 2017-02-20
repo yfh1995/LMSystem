@@ -16,6 +16,7 @@ class CreateBorrowInfoTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->comment('借阅者id');
             $table->integer('book_id')->comment('图书id');
+            $table->integer('status')->comment('租借状态，0：在借，1：赔偿，2：归还');
             $table->timestamp('end_time')->comment('截止时间');
             $table->timestamps();
         });

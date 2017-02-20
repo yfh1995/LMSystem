@@ -27,8 +27,8 @@ class BooksController extends Controller{
     public function index(Request $request){
         $params = $request->all();
 
-//        $size = isset($params['size'])?$params['size']:$this->configs['page_num'];
-        $size = 1;
+        $size = isset($params['size'])?$params['size']:$this->configs['page_num'];
+
         $table = DB::table('books_info as bi')
             ->leftjoin('books_type as bt','bt.id','=','bi.type_id')
             ->select(DB::raw('bi.id,bi.book_number,bt.type_name,bi.name,bi.press,bi.publication_year,bi.author,bi.price,bi.cur_total,bi.total,bi.created_at'));
@@ -68,7 +68,7 @@ class BooksController extends Controller{
                 $books[] = $v;
             }
 
-            $this->path = 'admin/books';
+            $this->path = $params['path'] = '/admin/books';
 
             //设置必要的script代码
             $this->buildupScript();
@@ -134,7 +134,7 @@ class BooksController extends Controller{
         $('._delete').click(function() {
             var id = $(this).data('id');
             if(confirm("{$confirm}")) {
-                $.post('/{$this->path}/' + id, {_method:'delete','_token':'{$token}'}, function(data){
+                $.post('{$this->path}/' + id, {_method:'delete','_token':'{$token}'}, function(data){
                     $.pjax.reload('#pjax-container');
                 });
             }

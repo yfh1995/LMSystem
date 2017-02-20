@@ -92,6 +92,10 @@ class MenuController extends Controller
         return $this->form()->store();
     }
 
+    public function show(){
+        return redirect('/admin/auth/menu');
+    }
+
     /**
      * Make a tree builder.
      *
