@@ -15,12 +15,15 @@ class Table extends Widget implements Renderable
 
     protected $page = [];
 
-    public function __construct($headers = [], $rows = [], $style = [], $page = [])
+    protected $params = [];
+
+    public function __construct($headers = [], $rows = [], $style = [], $page = [], $params = [])
     {
         $this->setHeaders($headers);
         $this->setRows($rows);
         $this->setStyle($style);
         $this->setPage($page);
+        $this->setParams($params);
     }
 
     public function setHeaders($headers = [])
@@ -59,6 +62,12 @@ class Table extends Widget implements Renderable
         return $this;
     }
 
+    public function setParams($params = []){
+        $this->params = $params;
+
+        return $this;
+    }
+
     /**
      * @return string
      */
@@ -69,6 +78,7 @@ class Table extends Widget implements Renderable
             'rows'    => $this->rows,
             'style'   => $this->style,
             'page'    => $this->page,
+            'params'  => $this->params,
         ];
 
         return view('admin::widgets.table', $vars)->render();

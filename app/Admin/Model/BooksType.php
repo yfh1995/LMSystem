@@ -1,10 +1,12 @@
-<?php namespace App\Admin\Model;
+<?php
 /**
  * Created by PhpStorm.
  * User: user
  * Date: 17/2/17
  * Time: 10:19
  */
+
+namespace App\Admin\Model;
 
 use Illuminate\Database\Eloquent\Model;
 

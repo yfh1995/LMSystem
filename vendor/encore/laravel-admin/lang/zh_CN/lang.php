@@ -63,5 +63,6 @@ return [
     'author'            => '作者',
     'price'             => '价格',
     'cur_total'         => '在存量',
-    'total'             => '总量'
+    'total'             => '总量',
+    'operation'         => '操作'
 ];

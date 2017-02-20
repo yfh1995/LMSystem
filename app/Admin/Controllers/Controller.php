@@ -17,7 +17,7 @@ class Controller extends \App\Http\Controllers\Controller{
 
     public function __construct(Request $request) {
 
-        $this->getConfig();
+        $this->getConfig();//dd($request);
     }
 
     //获取系统配置

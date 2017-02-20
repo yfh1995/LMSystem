@@ -63,5 +63,6 @@ return [
     'author'            => 'Author',
     'price'             => 'Price',
     'cur_total'         => 'Cur Total',
-    'total'             => 'Total'
+    'total'             => 'Total',
+    'operation'         => 'Operation'
 ];
