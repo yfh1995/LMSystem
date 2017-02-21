@@ -70,4 +70,11 @@ return [
     'end_time'      => 'End Time',
     'id_number'     => 'Id Number',
     'borrow_status' => 'Borrow Status',
+    'identity'      => 'Identity',
+    'major'         => 'Major',
+    'grade'         => 'Grade',
+    'sex'           => 'Sex',
+    'available_num' => 'Available Num',
+    'sum_num'       => 'Total Num',
+    'phone'         => 'Phone',
 ];

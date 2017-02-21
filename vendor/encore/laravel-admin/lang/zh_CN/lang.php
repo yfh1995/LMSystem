@@ -70,4 +70,11 @@ return [
     'end_time'      => '截止时间',
     'id_number'     => '证件号码',
     'borrow_status' => '租借状态',
+    'identity'      => '身份',
+    'major'         => '专业',
+    'grade'         => '年级',
+    'sex'           => '性别',
+    'available_num' => '可借阅数',
+    'sum_num'       => '可借阅总数',
+    'phone'         => '电话',
 ];

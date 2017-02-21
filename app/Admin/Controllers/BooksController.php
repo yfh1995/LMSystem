@@ -81,7 +81,7 @@ class BooksController extends Controller{
                     new Table($headers, $books, [],$data,$params),
                     ['select_id'=>'select_book_type','search_id'=>'search_book_number','options'=>$options,'params'=>$params]
                 )
-            )->addSelete()->style('info')->solid());
+            )->addBookTypeSelect()->style('info')->solid());
         });
     }
 

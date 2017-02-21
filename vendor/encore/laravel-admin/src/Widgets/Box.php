@@ -51,7 +51,7 @@ class Box extends Widget implements Renderable
         $this->toolsParams = $toolsParams;
     }
 
-    public function addSelete(){
+    public function addBookTypeSelect(){
         $select_id = $this->toolsParams['select_id'];
         $search_id = $this->toolsParams['search_id'];
         $options = $this->toolsParams['options'];
@@ -69,13 +69,13 @@ class Box extends Widget implements Renderable
 
         $this->attributes['tools'][] =  $str;
 
-        $script = $this->buildupScript();
+        $script = $this->buildupBookTypeScript();
         AdminManager::script($script);
 
         return $this;
     }
 
-    public function buildupScript(){
+    public function buildupBookTypeScript(){
         $select_id = $this->toolsParams['select_id'];
         $search_id = $this->toolsParams['search_id'];
         $path = $this->toolsParams['params']['path'];
@@ -93,6 +93,39 @@ class Box extends Widget implements Renderable
                 var type_id = $('#$select_id option:selected') .val();
                 var book_number = $('#$search_id') .val();
                 window.location.href = '$path?type_id=' + type_id + '&book_number=' + book_number;
+			}
+		});
+
+SCRIPT;
+
+    }
+
+    public function addUserSelect(){
+        $search_id = $this->toolsParams['search_id'];
+        $params = $this->toolsParams['params'];
+
+        $str = '<div class="form-group"><div class="col-sm-5" style="padding-left:0px;">';
+        $str .= '<input id="'.$search_id.'" type="text" name="id_number" value="'.(isset($params['id_number'])?$params['id_number']:"").'" placeholder="'.trans('admin::lang.id_number').'" style="height:30px;color:black;">';
+        $str .= '</div></div>';
+
+        $this->attributes['tools'][] =  $str;
+
+        $script = $this->buildupUserScript();
+        AdminManager::script($script);
+
+        return $this;
+    }
+
+    public function buildupUserScript(){
+        $search_id = $this->toolsParams['search_id'];
+        $path = $this->toolsParams['params']['path'];
+
+        return <<<SCRIPT
+
+        $('#$search_id').keyup(function(e){
+			if(e.keyCode === 13){
+                var id_number = $('#$search_id') .val();
+                window.location.href = '$path?id_number=' + id_number;
 			}
 		});
 
