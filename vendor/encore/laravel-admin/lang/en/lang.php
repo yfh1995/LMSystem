@@ -73,8 +73,11 @@ return [
     'identity'      => 'Identity',
     'major'         => 'Major',
     'grade'         => 'Grade',
+    'class'         => 'Class',
     'sex'           => 'Sex',
     'available_num' => 'Available Num',
     'sum_num'       => 'Total Num',
     'phone'         => 'Phone',
+
+    'user'          => 'User',
 ];

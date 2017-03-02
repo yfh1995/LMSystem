@@ -104,8 +104,10 @@ SCRIPT;
         $search_id = $this->toolsParams['search_id'];
         $params = $this->toolsParams['params'];
 
-        $str = '<div class="form-group"><div class="col-sm-5" style="padding-left:0px;">';
+        $str = '<div class="form-group"><div class="col-sm-8" style="padding-left:0px;">';
         $str .= '<input id="'.$search_id.'" type="text" name="id_number" value="'.(isset($params['id_number'])?$params['id_number']:"").'" placeholder="'.trans('admin::lang.id_number').'" style="height:30px;color:black;">';
+        $str .= '</div><div class="col-sm-4" style="padding-left:0px;">';
+        $str .= '<a class="btn btn-warning" href="'.$params['path'].'/create">创建</a>';
         $str .= '</div></div>';
 
         $this->attributes['tools'][] =  $str;

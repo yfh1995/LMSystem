@@ -18,6 +18,7 @@ class CreateUserInfoTable extends Migration
             $table->integer('identity')->nullable()->comment('身份，0：学生，1：老师');
             $table->string('major')->nullable()->comment('专业');
             $table->string('grade')->nullable()->comment('年级');
+            $table->string('class')->nullable()->comment('班级');
             $table->string('id_number')->comment('证件号码');
             $table->boolean('sex')->comment('性别，true：男，false：女');
             $table->integer('available_num')->comment('可借阅数量');

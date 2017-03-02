@@ -73,8 +73,11 @@ return [
     'identity'      => '身份',
     'major'         => '专业',
     'grade'         => '年级',
+    'class'         => '班级',
     'sex'           => '性别',
     'available_num' => '可借阅数',
     'sum_num'       => '可借阅总数',
     'phone'         => '电话',
+
+    'user'          => '用户',
 ];

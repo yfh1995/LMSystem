@@ -13,17 +13,14 @@ $router->group(['middleware' => 'admin.auth'],function($router){
     //=====================================================
     $router->get('/', 'HomeController@index');
 
-    //=====================================================
-    //==========                     ======================
-    //==========      图书管理        ======================
-    //==========                     ======================
-    //=====================================================
 
     $router->resources([
         //图书管理
         'books'     =>  'BooksController',
         //图书分类管理
-        'booksType' =>  'BooksTypeController'
+        'booksType' =>  'BooksTypeController',
+        //用户管理
+        'users'     =>  'UsersController'
     ]);
 
     //图书借阅管理
@@ -44,7 +41,7 @@ $router->group(['middleware' => 'admin.auth'],function($router){
     //==========                     ======================
     //=====================================================
     //用户列表
-    $router->get('users','UsersController@index');
+//    $router->get('users','UsersController@index');
 
 });
 
