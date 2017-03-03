@@ -20,7 +20,9 @@ $router->group(['middleware' => 'admin.auth'],function($router){
         //图书分类管理
         'booksType' =>  'BooksTypeController',
         //用户管理
-        'users'     =>  'UsersController'
+        'users'     =>  'UsersController',
+        //系统配置
+        'config'   =>  'ConfigController'
     ]);
 
     //图书借阅管理

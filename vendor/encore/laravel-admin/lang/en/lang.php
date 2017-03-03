@@ -80,4 +80,9 @@ return [
     'phone'         => 'Phone',
 
     'user'          => 'User',
+    'config'        => 'Config',
+    'key'           => 'Key',
+    'value'         => 'Value',
+    'remarks'       => 'Remarks',
+    'enable_status' => 'Enable Status',
 ];

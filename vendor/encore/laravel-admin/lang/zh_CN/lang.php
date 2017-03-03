@@ -55,7 +55,7 @@ return [
     'type_name'     => '类型名称',
 
     'books'             => '书籍',
-    'book_number'       => '编号',
+    'book_number'       => '书号',
     'classification'    => '分类',
     'book_name'         => '书名',
     'press'             => '出版社',
@@ -80,4 +80,9 @@ return [
     'phone'         => '电话',
 
     'user'          => '用户',
+    'config'        => '系统配置',
+    'key'           => '键',
+    'value'         => '值',
+    'remarks'       => '备注',
+    'enable_status' => '启用状态',
 ];

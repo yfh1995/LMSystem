@@ -62,7 +62,7 @@ class Box extends Widget implements Renderable
             $str .= '<option value="'.$select.'" '.((isset($params['type_id'])&&$params['type_id']==$select)?"selected":"").'>'.$option.'</option>';
         }
         $str .= '</select></div><div class="col-sm-5" style="padding-left:0px;">';
-        $str .= '<input id="'.$search_id.'" type="text" name="book_number" value="'.(isset($params['book_number'])?$params['book_number']:"").'" placeholder="'.trans('admin::lang.book_number').'" style="height:30px;color:black;">';
+        $str .= '<input id="'.$search_id.'" type="text" name="key_word" value="'.(isset($params['key_word'])?$params['key_word']:"").'" placeholder="'.trans('admin::lang.book_number').'/'.trans('admin::lang.id_number').'" style="height:30px;color:black;">';
         $str .= '</div><div class="col-sm-2" style="padding-left:0px;">';
         $str .= '<a class="btn btn-warning" href="'.$params['path'].'/create">创建</a>';
         $str .= '</div></div>';
@@ -84,15 +84,15 @@ class Box extends Widget implements Renderable
 
         $('#$select_id').change(function(){
             var type_id = $('#$select_id option:selected') .val();
-            var book_number = $('#$search_id') .val();
-            window.location.href = '$path?type_id=' + type_id + '&book_number=' + book_number;
+            var keyword = $('#$search_id') .val();
+            window.location.href = '$path?type_id=' + type_id + '&keyword=' + keyword;
         });
 
         $('#$search_id').keyup(function(e){
 			if(e.keyCode === 13){
                 var type_id = $('#$select_id option:selected') .val();
-                var book_number = $('#$search_id') .val();
-                window.location.href = '$path?type_id=' + type_id + '&book_number=' + book_number;
+                var keyword = $('#$search_id') .val();
+                window.location.href = '$path?type_id=' + type_id + '&keyword=' + keyword;
 			}
 		});
 

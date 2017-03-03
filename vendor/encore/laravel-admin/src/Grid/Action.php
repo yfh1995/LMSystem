@@ -88,7 +88,7 @@ class Action
             });
 
             $('.grid-refresh').on('click', function() {
-                $.pjax.reload('#pjax-container');
+                window.location.reload();
             });
 
 

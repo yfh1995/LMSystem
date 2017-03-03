@@ -87,6 +87,10 @@ class UserController extends Controller
                 }
             });
 
+            $grid->filter(function($filter){
+                $filter->is('id','ID');
+            });
+
             $grid->disableBatchDeletion();
         });
     }

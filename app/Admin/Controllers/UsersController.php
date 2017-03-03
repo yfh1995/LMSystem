@@ -17,6 +17,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Widgets\Table;
 use Encore\Admin\Form;
+use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin as AdminManager;
 
 class UsersController extends Controller{
@@ -28,52 +29,11 @@ class UsersController extends Controller{
 
         $size = isset($params['size'])?$params['size']:$this->configs['page_num'];
 
-        $table = DB::table('user_info')
-                ->select(DB::raw('id,name,identity,major,grade,class,id_number,sex,available_num,sum_num,phone,created_at'));
-        if(isset($params['id_number'])) $table->where('id_number',$params['id_number']);
-        $data = $table->paginate($size);
+        return Admin::content(function (Content $content) use($size){
 
-        return Admin::content(function (Content $content) use($data,$params){
-
-            $content->header(trans('admin::lang.borrow'));
+            $content->header(trans('admin::lang.user'));
             $content->description(trans('admin::lang.list'));
-
-            $headers = [
-                'Id',
-                trans('admin::lang.username'),
-                trans('admin::lang.identity'),
-                trans('admin::lang.major'),
-                trans('admin::lang.grade'),
-                trans('admin::lang.class'),
-                trans('admin::lang.id_number'),
-                trans('admin::lang.sex'),
-                trans('admin::lang.available_num'),
-                trans('admin::lang.sum_num'),
-                trans('admin::lang.phone'),
-                trans('admin::lang.created_at'),
-                trans('admin::lang.operation'),
-            ];
-
-            $users = array();
-            foreach($data as $v){
-                $v->operation = '<a class="btn btn-warning btn-xs" href="/admin/users/'.$v->id.'/edit">编辑</a>&nbsp&nbsp';
-                $v->operation .= '<button class="btn btn-danger btn-xs _delete" data-id="'.$v->id.'">删除</button>';
-                $users[] = $v;
-            }
-
-            //设置必要的script代码
-            $this->path = '/admin/users';
-            $this->buildupScript();
-            AdminManager::script($this->script);
-
-            $params['path'] = '/admin/users';
-            $content->row((
-            new Box(
-                'Table',
-                new Table($headers, $users, [],$data,$params),
-                ['search_id'=>'search_book_number','params'=>$params]
-            )
-            )->addUserSelect()->style('info')->solid());
+            $content->body($this->grid($size));
         });
     }
 
@@ -132,6 +92,45 @@ class UsersController extends Controller{
 
             $form->display('created_at', trans('admin::lang.created_at'));
             $form->display('updated_at', trans('admin::lang.updated_at'));
+        });
+    }
+
+    public function grid($size){
+        return Admin::grid(User::class, function (Grid $grid) use($size){
+            $grid->id('ID')->sortable();
+
+            $grid->name(trans('admin::lang.username'))->sortable();
+            $grid->identity(trans('admin::lang.identity'))->value(function ($roles) {
+                if($roles) return '教师';
+                else return '学生';
+            });
+            $grid->major(trans('admin::lang.major'));
+            $grid->grade(trans('admin::lang.grade'));
+            $grid->class(trans('admin::lang.class'));
+            $grid->id_number(trans('admin::lang.id_number'))->sortable();
+            $grid->sex(trans('admin::lang.sex'))->value(function ($roles) {
+                if($roles) return '男';
+                else return '女';
+            });
+            $grid->available_num(trans('admin::lang.available_num'));
+            $grid->sum_num(trans('admin::lang.sum_num'));
+            $grid->phone(trans('admin::lang.phone'));
+            $grid->created_at(trans('admin::lang.created_at'));
+
+            $grid->rows(function($row){
+                $row->actions()->add(function ($row) {
+                    return "<a href='/admin/borrow?key_word={$row->id_number}'><i class='fa fa-eye'></i></a>";
+                });
+            });
+
+            $grid->filter(function($filter){
+
+                $filter->like('id_number',trans('admin::lang.id_number'));
+            });
+
+            $grid->paginate($size);
+
+            $grid->disableBatchDeletion();
         });
     }
 
