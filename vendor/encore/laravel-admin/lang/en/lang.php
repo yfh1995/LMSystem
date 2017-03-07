@@ -85,4 +85,13 @@ return [
     'value'         => 'Value',
     'remarks'       => 'Remarks',
     'enable_status' => 'Enable Status',
+
+    'index'         => 'Index',
+    'ranking_list'  => 'Ranking List',
+
+    'borrow_num'    => 'Borrow Num',
+    'personal_lending_list'     => 'Personal Lending List',
+    'major_lending_list'     => 'Major Lending List',
+    'grade_lending_list'     => 'Grade Lending List',
+    'class_lending_list'     => 'Class Lending List',
 ];

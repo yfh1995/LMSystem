@@ -19,9 +19,16 @@ class Books extends Model{
     {
         $this->table = 'books_info';
 
-        $this->hasOne(Borrow::class);
-
         parent::__construct($attributes);
+    }
+
+    public function borrow(){
+        return $this->belongsTo(Borrow::class,'id');
+    }
+
+    public function booksType()
+    {
+        return $this->hasOne(BooksType::class,'id','type_id');
     }
 
 }

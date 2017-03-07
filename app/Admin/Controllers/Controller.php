@@ -27,7 +27,8 @@ class Controller extends \App\Http\Controllers\Controller{
         $config = $this->object_array($config);
 
         foreach ($config as $v) {
-           $this->configs[$v['key']] = json_decode($v['value']);
+            if($v['status'] == 1)
+                $this->configs[$v['key']] = json_decode($v['value']);
         }
 
     }

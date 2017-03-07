@@ -72,6 +72,10 @@ class PermissionController extends Controller
             $grid->created_at(trans('admin::lang.created_at'));
             $grid->updated_at(trans('admin::lang.updated_at'));
 
+            $grid->filter(function($filter){
+                $filter->is('id','Id');
+            });
+
             $grid->disableBatchDeletion();
         });
     }

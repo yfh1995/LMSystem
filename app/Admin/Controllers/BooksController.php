@@ -10,6 +10,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Model\BooksType;
 use DB;
+use Encore\Admin\Grid;
 use Illuminate\Http\Request;
 use App\Admin\Model\Books;
 
@@ -41,47 +42,48 @@ class BooksController extends Controller{
             ->paginate($size);
 
 
-        return Admin::content(function (Content $content) use($data,$params){
+        return Admin::content(function (Content $content) use($data,$params,$size){
 
             $content->header(trans('admin::lang.books'));
             $content->description(trans('admin::lang.list'));
+            $content->body($this->grid($size));
 
-            $headers = [
-                'Id',
-                trans('admin::lang.book_number'),
-                trans('admin::lang.classification'),
-                trans('admin::lang.book_name'),
-                trans('admin::lang.press'),
-                trans('admin::lang.publication_year'),
-                trans('admin::lang.author'),
-                trans('admin::lang.price'),
-                trans('admin::lang.cur_total'),
-                trans('admin::lang.total'),
-                trans('admin::lang.created_at'),
-                trans('admin::lang.operation')
-            ];
-
-            $books = array();
-            foreach($data as $v){
-                $v->operation = '<a class="btn btn-warning btn-xs" href="/admin/books/'.$v->id.'/edit">编辑</a>&nbsp&nbsp';
-                $v->operation .= '<button class="btn btn-danger btn-xs _delete" data-id="'.$v->id.'">删除</button>';
-                $books[] = $v;
-            }
-
-            $this->path = $params['path'] = '/admin/books';
-
-            //设置必要的script代码
-            $this->buildupScript();
-            AdminManager::script($this->script);
-
-            $options = [0 => 'Root'] + BooksType::buildSelectOptions([],0,'',2);
-            $content->row((
-                new Box(
-                    'Table',
-                    new Table($headers, $books, [],$data,$params),
-                    ['select_id'=>'select_book_type','search_id'=>'search_book_number','options'=>$options,'params'=>$params]
-                )
-            )->addBookTypeSelect()->style('info')->solid());
+//            $headers = [
+//                'Id',
+//                trans('admin::lang.book_number'),
+//                trans('admin::lang.classification'),
+//                trans('admin::lang.book_name'),
+//                trans('admin::lang.press'),
+//                trans('admin::lang.publication_year'),
+//                trans('admin::lang.author'),
+//                trans('admin::lang.price'),
+//                trans('admin::lang.cur_total'),
+//                trans('admin::lang.total'),
+//                trans('admin::lang.created_at'),
+//                trans('admin::lang.operation')
+//            ];
+//
+//            $books = array();
+//            foreach($data as $v){
+//                $v->operation = '<a class="btn btn-warning btn-xs" href="/admin/books/'.$v->id.'/edit">编辑</a>&nbsp&nbsp';
+//                $v->operation .= '<button class="btn btn-danger btn-xs _delete" data-id="'.$v->id.'">删除</button>';
+//                $books[] = $v;
+//            }
+//
+//            $this->path = $params['path'] = '/admin/books';
+//
+//            //设置必要的script代码
+//            $this->buildupScript();
+//            AdminManager::script($this->script);
+//
+//            $options = [0 => 'Root'] + BooksType::buildSelectOptions([],0,'',2);
+//            $content->row((
+//                new Box(
+//                    'Table',
+//                    new Table($headers, $books, [],$data,$params),
+//                    ['select_id'=>'select_book_type','search_id'=>'search_book_number','options'=>$options,'params'=>$params]
+//                )
+//            )->addBookTypeSelect()->style('info')->solid());
         });
     }
 
@@ -119,6 +121,38 @@ class BooksController extends Controller{
 
     public function show(){
         return redirect('admin/books/');
+    }
+
+    public function grid($size){
+        return Admin::grid(Books::class,function(Grid $grid)use($size){
+            $grid->id('ID')->sortable();
+
+            $grid->book_number(trans('admin::lang.book_number'))->sortable();
+//            $grid->booksType()->type_name(trans('admin::lang.type_name'))->sortable();
+            $grid->name(trans('admin::lang.book_name'));
+            $grid->press(trans('admin::lang.press'));
+            $grid->publication_year(trans('admin::lang.publication_year'));
+            $grid->author(trans('admin::lang.author'));
+            $grid->price(trans('admin::lang.price'));
+            $grid->cur_total(trans('admin::lang.cur_total'));
+            $grid->total(trans('admin::lang.total'));
+            $grid->created_at(trans('admin::lang.created_at'));
+
+            $grid->rows(function($row){
+                $row->actions()->add(function ($row) {
+                    return "<a href='/admin/borrow?books%5Bbook_number%5D={$row->book_number}'><i class='fa fa-eye'></i></a>";
+                });
+            });
+
+            $grid->filter(function($filter){
+
+                $filter->like('books.book_number',trans('admin::lang.book_number'));
+            });
+
+            $grid->paginate($size);
+
+            $grid->disableBatchDeletion();
+        });
     }
 
     /**

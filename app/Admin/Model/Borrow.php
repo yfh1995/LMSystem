@@ -22,8 +22,13 @@ class Borrow extends Model{
         parent::__construct($attributes);
     }
 
-    public function profile()
+    public function user()
     {
-        $this->hasOne(User::class);
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function books()
+    {
+        return $this->hasOne(Books::class,'id','book_id');
     }
 }

@@ -85,4 +85,13 @@ return [
     'value'         => '值',
     'remarks'       => '备注',
     'enable_status' => '启用状态',
+
+    'index'         => '首页',
+    'ranking_list'  => '排行榜',
+
+    'borrow_num'    => '借阅数量',
+    'personal_lending_list'     => '个人借阅榜',
+    'major_lending_list'     => '专业借阅榜',
+    'grade_lending_list'     => '年级借阅榜',
+    'class_lending_list'     => '班级借阅榜',
 ];

@@ -119,7 +119,7 @@ class UsersController extends Controller{
 
             $grid->rows(function($row){
                 $row->actions()->add(function ($row) {
-                    return "<a href='/admin/borrow?key_word={$row->id_number}'><i class='fa fa-eye'></i></a>";
+                    return "<a href='/admin/borrow?user%5Bid_number%5D={$row->id_number}'><i class='fa fa-eye'></i></a>";
                 });
             });
 

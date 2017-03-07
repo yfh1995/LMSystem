@@ -19,8 +19,10 @@ class User extends Model{
     {
         $this->table = 'user_info';
 
-        $this->hasOne(Borrow::class);
-
         parent::__construct($attributes);
+    }
+
+    public function borrow(){
+        return $this->belongsTo(Borrow::class,'id');
     }
 }

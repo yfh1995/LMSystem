@@ -27,62 +27,11 @@ class BorrowController extends Controller{
 
         $size = isset($params['size'])?$params['size']:$this->configs['page_num'];
 
-        $table = DB::table('borrow_info as bo')
-            ->leftjoin('books_info as bi','bi.id','=','bo.book_id')
-            ->leftjoin('books_type as bt','bt.id','=','bi.type_id')
-            ->leftjoin('user_info as ui','ui.id','=','bo.user_id')
-            ->select(DB::raw('bo.id,ui.name as user_name,bi.book_number,bi.name as book_name,bo.status,bo.created_at,bo.end_time'));
-        if(isset($params['type_id']) && $params['type_id']!=''){
-            $this->getLastSons($params['type_id'],$type_ids);
-            $table->whereIn('bi.type_id',$type_ids);
-        }
-        if(isset($params['key_word']) && $params['key_word']!=''){
-            $table->where(function($query) use($params){
-                $query->where('bi.book_number','like','%'.$params['key_word'].'%')
-                    ->orWhere('ui.id_number','like','%'.$params['key_word'].'%');
-            });
-//            $table->whereOr('bi.book_number','like','%'.$params['book_number'].'%');
-        }
-        $data = $table->orderBy('bo.created_at','desc')
-            ->paginate($size);
-
-        return Admin::content(function (Content $content) use($data,$params,$size){
+        return Admin::content(function (Content $content) use($size){
 
             $content->header(trans('admin::lang.borrow'));
             $content->description(trans('admin::lang.list'));
             $content->body($this->grid($size));
-//            $headers = [
-//                'Id',
-//                trans('admin::lang.username'),
-//                trans('admin::lang.book_number'),
-//                trans('admin::lang.book_name'),
-//                trans('admin::lang.borrow_status'),
-//                trans('admin::lang.created_at'),
-//                trans('admin::lang.end_time'),
-//                trans('admin::lang.operation'),
-//            ];
-//
-//            $borrows = array();
-//            foreach($data as $v){
-//                if($v->status == 0) {
-//                    $v->operation = '<a class="btn btn-warning btn-xs" href="/admin/borrow/return?id=' . $v->id . '">归还</a>&nbsp&nbsp';
-//                    $v->operation .= '<a class="btn btn-danger btn-xs" href="/admin/borrow/compensate?id=' . $v->id . '">赔偿</a>';
-//                }else{
-//                    $v->operation = '无';
-//                }
-//                $v->status = $this->statusToString($v->status);
-//                $borrows[] = $v;
-//            }
-//
-//            $params['path'] = '/admin/borrow';
-//            $options = [0 => 'Root'] + BooksType::buildSelectOptions([],0,'',2);
-//            $content->row((
-//                new Box(
-//                    'Table',
-//                    new Table($headers, $borrows, [],$data,$params),
-//                    ['select_id'=>'select_book_type','search_id'=>'search_book_number','options'=>$options,'params'=>$params]
-//                )
-//            )->addBookTypeSelect()->style('info')->solid());
         });
     }
 
@@ -180,8 +129,8 @@ class BorrowController extends Controller{
             $grid->id('ID')->sortable();
 
             $grid->user()->name(trans('admin::lang.username'))->sortable();
-            $grid->books_info()->book_number(trans('admin::lang.book_number'))->sortable();
-            $grid->books_info()->mame(trans('admin::lang.book_name'));
+            $grid->books()->book_number(trans('admin::lang.book_number'))->sortable();
+            $grid->books()->name(trans('admin::lang.book_name'));
             $grid->status(trans('admin::lang.borrow_status'))->value(function($roles){
                 if($roles == 0) return '<span class="label label-warning">在借</span>';
                 else if($roles == 1) return '<div class="label label-danger">赔偿</div>';
@@ -194,8 +143,8 @@ class BorrowController extends Controller{
             $grid->rows(function($row){
                 $row->actions()->add(function ($row) {
                     if($row->status == 0) {
-                        $str = "<a href='/admin/borrow/return?id={$row->id}'><i class='fa fa-eye'></i></a>";
-                        $str .= "<a href='/admin/borrow/compensate?id={$row->id}'><i class='fa fa-eye'></i></a>";
+                        $str = "<a class='btn btn-success btn-xs' href='/admin/borrow/return?id={$row->id}' >归还</a>&nbsp";
+                        $str .= "<a class='btn btn-danger btn-xs' href='/admin/borrow/compensate?id={$row->id}'>赔偿</a>";
                     }else{
                         $str = '无';
                     }
@@ -206,7 +155,7 @@ class BorrowController extends Controller{
             $grid->filter(function($filter){
 
                 $filter->like('user.id_number',trans('admin::lang.id_number'));
-                $filter->like('books_info.book_number',trans('admin::lang.book_number'));
+                $filter->like('books.book_number',trans('admin::lang.book_number'));
             });
 
             $grid->paginate($size);
@@ -226,12 +175,5 @@ class BorrowController extends Controller{
         foreach($sons as $son){
             $this->getLastSons($son->id,$type_ids);
         }
-    }
-
-    public function statusToString($roles){
-        if($roles == 0) return '<span class="label label-warning">在借</span>';
-        else if($roles == 1) return '<div class="label label-danger">赔偿</div>';
-        else if($roles == 2) return '<div class="label label-success">归还</div>';
-        else return '<div class="label label-danger">未知</div>';
     }
 }
