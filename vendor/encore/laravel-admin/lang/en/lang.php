@@ -89,6 +89,9 @@ return [
     'index'         => 'Index',
     'ranking_list'  => 'Ranking List',
 
+    'year_list'     => 'Year List',
+    'month_list'     => 'Month List',
+    'week_list'     => 'Week List',
     'borrow_num'    => 'Borrow Num',
     'personal_lending_list'     => 'Personal Lending List',
     'major_lending_list'     => 'Major Lending List',

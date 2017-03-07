@@ -89,6 +89,9 @@ return [
     'index'         => '首页',
     'ranking_list'  => '排行榜',
 
+    'year_list'     => '年榜',
+    'month_list'     => '月榜',
+    'week_list'     => '周榜',
     'borrow_num'    => '借阅数量',
     'personal_lending_list'     => '个人借阅榜',
     'major_lending_list'     => '专业借阅榜',

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="MySQL - LMSystem@localhost" uuid="75d131b0-bbf5-4905-841e-9d66f131ec6e">
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-pattern>lmsystem.*</schema-pattern>
+      <default-schemas>lmsystem.*</default-schemas>
+    </data-source>
+  </component>
+</project>
