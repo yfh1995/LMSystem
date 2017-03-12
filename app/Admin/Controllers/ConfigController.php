@@ -76,11 +76,11 @@ class ConfigController extends Controller{
 
             $grid->created_at(trans('admin::lang.created_at'));
 
-            $grid->rows(function($row){
-                $row->actions()->add(function ($row) {
-                    return "<a href='/url/{$row->id}'><i class='fa fa-eye'></i></a>";
-                });
-            });
+//            $grid->rows(function($row){
+//                $row->actions()->add(function ($row) {
+//                    return "<a href='/url/{$row->id}'><i class='fa fa-eye'></i></a>";
+//                });
+//            });
 
             $grid->filter(function($filter){
 
@@ -91,6 +91,10 @@ class ConfigController extends Controller{
 
             $grid->disableBatchDeletion();
         });
+    }
+
+    public function show(){
+        return redirect('admin/config');
     }
 
     public function form(){

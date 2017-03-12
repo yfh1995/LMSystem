@@ -2,7 +2,7 @@
 
 return [
 
-    'name'  => 'Laravel-admin',
+    'name'  => 'LMSystem',
 
     'prefix'    => 'admin',
 

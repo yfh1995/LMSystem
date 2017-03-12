@@ -97,4 +97,7 @@ return [
     'major_lending_list'     => 'Major Lending List',
     'grade_lending_list'     => 'Grade Lending List',
     'class_lending_list'     => 'Class Lending List',
+
+    'no'            => 'No',
+    'overview'      => 'Overview',
 ];

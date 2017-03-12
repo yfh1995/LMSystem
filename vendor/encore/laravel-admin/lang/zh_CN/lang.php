@@ -97,4 +97,7 @@ return [
     'major_lending_list'     => '专业借阅榜',
     'grade_lending_list'     => '年级借阅榜',
     'class_lending_list'     => '班级借阅榜',
+
+    'no'            => '排名',
+    'overview'      => '概况',
 ];

@@ -132,21 +132,17 @@ class BorrowController extends Controller{
             $grid->books()->book_number(trans('admin::lang.book_number'))->sortable();
             $grid->books()->name(trans('admin::lang.book_name'));
             $grid->status(trans('admin::lang.borrow_status'))->value(function($roles){
-                if($roles == 0) return '<span class="label label-warning">在借</span>';
-                else if($roles == 1) return '<div class="label label-danger">赔偿</div>';
-                else if($roles == 2) return '<div class="label label-success">归还</div>';
-                else return '<div class="label label-danger">未知</div>';
+                return $this->statusToHtml($roles);
             });
             $grid->created_at(trans('admin::lang.created_at'));
             $grid->end_time(trans('admin::lang.end_time'));
 
             $grid->rows(function($row){
                 $row->actions()->add(function ($row) {
-                    if($row->status == 0) {
+                    $str = '';
+                    if($this->htmlToStatus($row->status) == 0) {
                         $str = "<a class='btn btn-success btn-xs' href='/admin/borrow/return?id={$row->id}' >归还</a>&nbsp";
                         $str .= "<a class='btn btn-danger btn-xs' href='/admin/borrow/compensate?id={$row->id}'>赔偿</a>";
-                    }else{
-                        $str = '无';
                     }
                     return $str;
                 });
@@ -175,5 +171,19 @@ class BorrowController extends Controller{
         foreach($sons as $son){
             $this->getLastSons($son->id,$type_ids);
         }
+    }
+
+    public function statusToHtml($status){
+        if($status == 0) return '<span class="label label-warning">在借</span>';
+        else if($status == 1) return '<div class="label label-danger">赔偿</div>';
+        else if($status == 2) return '<div class="label label-success">归还</div>';
+        else return '<div class="label label-danger">未知</div>';
+    }
+
+    public function htmlToStatus($html){
+        if($html == '<span class="label label-warning">在借</span>') return 0;
+        else if($html == '<div class="label label-danger">赔偿</div>') return 1;
+        else if($html == '<div class="label label-success">归还</div>') return 2;
+        else return 3;
     }
 }

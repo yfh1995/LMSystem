@@ -1,6 +1,6 @@
 <?php
 
-//namespace DummyNamespace;
+namespace App\Admin\Controllers;;
 
 use App\Http\Controllers\Controller;
 use Encore\Admin\Facades\Admin;
