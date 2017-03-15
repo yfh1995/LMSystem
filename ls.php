@@ -83,7 +83,11 @@ class HomeController extends Controller
 
                 $row->column(6, function (Column $column) {
 
-                    $column->append(new Box('Radar', new Radar()));
+                    $column->append(new Box('Radar', new Radar(
+                        [50, 50, 50, 50, 50, 50, 50],
+                        [40, 40, 40, 40, 40, 40, 40],
+                        ['11','22','33','44','55','66','77']
+                    )));
 
                     $polarArea = new PolarArea([
                         ['Red', 300],

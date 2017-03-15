@@ -29,6 +29,95 @@ class HomeController extends Controller
             $content->header(trans('admin::lang.index'));
             $content->description(trans('admin::lang.overview'));
 
+            $content->row(function ($row){
+
+                $row->column(6,function(Column $column) {
+                    if (isset($this->configs['index_false'])) {
+                        $pie_info = [
+                            [trans('admin::lang.xianxia'), 400], [trans('admin::lang.xuanhuan'), 600], [trans('admin::lang.xuanyi'), 600], [trans('admin::lang.dushi'), 600],
+                            [trans('admin::lang.qihuan'), 600], [trans('admin::lang.junshi'), 600], [trans('admin::lang.tiyu'), 600], [trans('admin::lang.youxi'), 600]
+                        ];
+                    } else {
+                        //获取顶级分类
+                        $pie_info = DB::table('books_type')
+                            ->select(DB::raw('id,type_name'))
+                            ->where('parent_id', 0)
+                            ->get();
+                        $pie_info = $pie_info->toArray();
+
+                        //获取顶级分类下的所有分类id
+                        foreach ($pie_info as &$v) {
+                            $one_ids = [$v['id']];
+                            $this->getSonIdById($v['id'], $one_ids);
+                            $v['ids'] = $one_ids;
+                        }
+
+                        //获取顶级下的书籍数量
+                        foreach ($pie_info as &$v) {
+                            unset($v['id']);
+                            $v['num'] = DB::table('books_info')->whereIn('type_id', $v['ids'])->count();
+                            unset($v['ids']);
+                        }
+                    }//dd($pie_info);
+                    $column->append((new Box(trans('admin::lang.books_type_overview'),new Pie($pie_info)))->removable()->collapsable()->style('info'));
+                });
+
+                $row->column(6,function(Column $column) {
+                    if (isset($this->configs['index_false'])) {
+                        $sum = [400,600,600,600,600,600,600,600];
+                        $cur_sum = [300,500,500,500,500,500,500,500];
+                        $name = [trans('admin::lang.xianxia'),trans('admin::lang.xuanhuan'),trans('admin::lang.xuanyi'),
+                            trans('admin::lang.dushi'),trans('admin::lang.qihuan'),trans('admin::lang.junshi'),
+                            trans('admin::lang.tiyu'),trans('admin::lang.youxi')];
+                    } else {
+                        //获取顶级分类
+                        $pie_info = DB::table('books_type')
+                            ->select(DB::raw('id,type_name'))
+                            ->where('parent_id', 0)
+                            ->get();
+                        $pie_info = $pie_info->toArray();
+
+                        //获取顶级分类下的所有分类id
+                        foreach ($pie_info as &$v) {
+                            $one_ids = [$v['id']];
+                            $this->getSonIdById($v['id'], $one_ids);
+                            $v['ids'] = $one_ids;
+                        }
+
+                        //获取顶级下的书籍数量
+                        $sum = [];
+                        $cur_sum = [];
+                        $name = [];
+                        foreach ($pie_info as &$v) {
+                            $name[] = $v['type_name'];
+                            $statistics = DB::table('books_info')
+                                ->select(DB::raw('sum(cur_total) as cur_sum,sum(total) as sum'))
+                                ->whereIn('type_id', $v['ids'])
+                                ->get();
+                            $cur_sum[] = $statistics[0]->cur_sum;
+                            $sum[] = $statistics[0]->sum;
+                        }
+                    }
+                    $column->append((new Box(trans('admin::lang.cur_type_overview'), new Radar($sum,$cur_sum,$name)))->removable()->collapsable()->style('info'));
+                });
+            });
+
+            $content->row(function ($row) {
+
+                $row->column(12,function(Column $column) {
+                    if (isset($this->configs['index_false'])) {
+                        $name = ["January", "February", "March", "April", "May", "June",
+                            "July","August","September","October","November","December"];
+                        $data = [
+                                ['First', [40, 56, 67, 23, 10, 45, 78, 99, 80, 70,60,50]],
+                            ];
+                    }else{
+
+                    }
+                    $column->append((new Box(trans('admin::lang.monthly_borrow_num'), new Bar($name,$data)))->removable()->collapsable()->style('info'));
+                });
+            });
+
             $content->row(function ($row) {
                 $headers = [trans('admin::lang.no'),trans('admin::lang.username'),trans('admin::lang.borrow_num')];
 
@@ -214,5 +303,14 @@ class HomeController extends Controller
                 $row->column(4,(new Box(trans('admin::lang.grade_lending_list'), new Table($headers, $rows)))->style('info')->solid());
             });
         });
+    }
+
+    public function getSonIdById($id,&$ids){
+
+        $type_info = DB::table('books_type')->where('parent_id',$id)->get();
+        foreach($type_info as $v){
+            $ids[] = $v->id;
+            $this->getSonIdById($v->id,$ids);
+        }
     }
 }

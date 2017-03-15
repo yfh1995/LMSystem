@@ -4,7 +4,13 @@ namespace Encore\Admin\Widgets\Chart;
 
 class Radar extends Chart
 {
-    protected $labels = [];
+    protected $labels = [],$data1 = '[]',$data2 = '[]',$label = '[]';
+
+    public function __construct($data1,$data2,$label){
+        $this->data1 = '['.implode(',',$data1).']';
+        $this->data2 = '['.implode(',',$data2).']';
+        $this->label = '["'.str_replace(',','","',implode(',',$label)).'"]';
+    }
 
     public function labels($labels)
     {
@@ -20,7 +26,7 @@ class Radar extends Chart
 (function(){
 
     var data = {
-        labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+        labels: $this->label,
         datasets: [
             {
                 label: "My First dataset",
@@ -30,7 +36,7 @@ class Radar extends Chart
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [65, 59, 90, 81, 56, 55, 40]
+                data: $this->data1
             },
             {
                 label: "My Second dataset",
@@ -40,7 +46,7 @@ class Radar extends Chart
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
-                data: [28, 48, 40, 19, 96, 27, 100]
+                data: $this->data2
             }
         ]
     };

@@ -98,6 +98,18 @@ return [
     'grade_lending_list'     => '年级借阅榜',
     'class_lending_list'     => '班级借阅榜',
 
-    'no'            => '排名',
-    'overview'      => '概况',
+    'no'                    => '排名',
+    'overview'              => '概况',
+    'books_type_overview'   => '图书分类概况',
+    'cur_type_overview'     => '即时分类借阅概况',
+    'monthly_borrow_num'    => '每月借阅统计',
+
+    'xianxia'       => '仙侠',
+    'xuanhuan'      => '玄幻',
+    'xuanyi'        => '悬疑',
+    'dushi'         => '都市',
+    'qihuan'        => '奇幻',
+    'junshi'        => '军事',
+    'tiyu'          => '体育',
+    'youxi'         => '游戏'
 ];

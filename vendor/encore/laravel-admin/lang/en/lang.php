@@ -100,4 +100,16 @@ return [
 
     'no'            => 'No',
     'overview'      => 'Overview',
+    'books_type_overview'   => 'Books Type Overview',
+    'cur_type_overview'     => 'Cur Type Overview',
+    'monthly_borrow_num'    => 'Monthly Borrow Num',
+
+    'xianxia'       => 'XianXia',
+    'xuanhuan'      => 'XuanHuan',
+    'xuanyi'        => 'XuanYi',
+    'dushi'         => 'DuShi',
+    'qihuan'        => 'QiHuan',
+    'junshi'        => 'JunShi',
+    'tiyu'          => 'TiYu',
+    'youxi'         => 'YouXi'
 ];
