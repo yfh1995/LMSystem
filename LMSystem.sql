@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `LMSystem` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `LMSystem`;
--- MySQL dump 10.13  Distrib 5.6.17, for osx10.6 (i386)
+-- MySQL dump 10.13  Distrib 5.7.9, for Win32 (AMD64)
 --
--- Host: 192.168.1.60    Database: LMSystem
+-- Host: localhost    Database: lmsystem
 -- ------------------------------------------------------
--- Server version	5.6.33-0ubuntu0.14.04.1
+-- Server version	5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -62,7 +60,7 @@ CREATE TABLE `admin_permissions` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `admin_permissions_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +69,7 @@ CREATE TABLE `admin_permissions` (
 
 LOCK TABLES `admin_permissions` WRITE;
 /*!40000 ALTER TABLE `admin_permissions` DISABLE KEYS */;
-INSERT INTO `admin_permissions` VALUES (1,'用户','用户','2017-02-15 17:01:45','2017-02-15 17:01:45');
+INSERT INTO `admin_permissions` VALUES (1,'用户','用户','2017-02-15 17:01:45','2017-02-15 17:01:45'),(2,'test1','test1','2017-03-12 13:05:22','2017-03-12 13:05:22');
 /*!40000 ALTER TABLE `admin_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +95,7 @@ CREATE TABLE `admin_role_menu` (
 
 LOCK TABLES `admin_role_menu` WRITE;
 /*!40000 ALTER TABLE `admin_role_menu` DISABLE KEYS */;
-INSERT INTO `admin_role_menu` VALUES (2,7,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(2,8,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,2,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(2,11,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,3,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,13,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO `admin_role_menu` VALUES (1,2,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,13,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,3,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,4,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,5,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(1,6,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `admin_role_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,6 +121,7 @@ CREATE TABLE `admin_role_permissions` (
 
 LOCK TABLES `admin_role_permissions` WRITE;
 /*!40000 ALTER TABLE `admin_role_permissions` DISABLE KEYS */;
+INSERT INTO `admin_role_permissions` VALUES (4,2,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `admin_role_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +147,7 @@ CREATE TABLE `admin_role_users` (
 
 LOCK TABLES `admin_role_users` WRITE;
 /*!40000 ALTER TABLE `admin_role_users` DISABLE KEYS */;
-INSERT INTO `admin_role_users` VALUES (1,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(0,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(0,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(2017,1,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO `admin_role_users` VALUES (1,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(0,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(0,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(2017,1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(2,2,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `admin_role_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +166,7 @@ CREATE TABLE `admin_roles` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `admin_roles_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -176,7 +175,7 @@ CREATE TABLE `admin_roles` (
 
 LOCK TABLES `admin_roles` WRITE;
 /*!40000 ALTER TABLE `admin_roles` DISABLE KEYS */;
-INSERT INTO `admin_roles` VALUES (1,'Administrator','administrator','2017-02-13 02:49:03','2017-02-13 02:49:03'),(2,'Admin','admin','2017-02-16 10:34:29','2017-02-16 10:34:29'),(3,'User','user','2017-02-16 10:34:42','2017-02-16 10:34:42');
+INSERT INTO `admin_roles` VALUES (1,'Administrator','administrator','2017-02-13 02:49:03','2017-02-13 02:49:03'),(2,'Admin','admin','2017-02-16 10:34:29','2017-02-16 10:34:29');
 /*!40000 ALTER TABLE `admin_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,7 +196,7 @@ CREATE TABLE `admin_users` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `admin_users_username_unique` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +205,7 @@ CREATE TABLE `admin_users` (
 
 LOCK TABLES `admin_users` WRITE;
 /*!40000 ALTER TABLE `admin_users` DISABLE KEYS */;
-INSERT INTO `admin_users` VALUES (1,'admin','$2y$10$n6ekpI9f7b4In8FQ3o5ij.IQUmGcFtJ98yC4o7hL11mapa/uF8z.i','Administrator',NULL,'2017-02-13 02:49:03','2017-02-13 02:49:03');
+INSERT INTO `admin_users` VALUES (1,'admin','$2y$10$n6ekpI9f7b4In8FQ3o5ij.IQUmGcFtJ98yC4o7hL11mapa/uF8z.i','Administrator','k5W16nmI2nfm1O5DtY2dTbApvv8EDnmCP27cyjVIOoluwhlk7OfV9pDdymlH','2017-02-13 02:49:03','2017-03-18 05:53:20'),(2,'user','$2y$10$aFnpaaHiQcqm6DYADRhskOKzX6AJzric5KgNQFX4.aypKNRbz3Cay','user','y97KmXCagtNiO8Miq1pAl4h3odc8emRetdkyuffhZ2H5IgXRyXPqf9Co5dOj','2017-03-18 05:53:16','2017-03-18 05:53:41');
 /*!40000 ALTER TABLE `admin_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,7 +325,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'page_num','15','每页数据数量',1,'2017-02-16 10:21:33','2017-02-16 10:21:33'),(2,'borrow_term','2592000','借阅时长',1,'2017-02-20 17:27:45','2017-02-20 17:27:47'),(3,'borrow_num','10','默认借阅数量',1,'2017-03-02 18:02:41','2017-03-02 18:02:43'),(4,'index_false','1','首页假数据开关（0：关，1：开）',0,'2017-03-03 13:15:21','2017-03-03 13:15:23');
+INSERT INTO `config` VALUES (1,'page_num','15','每页数据数量',1,'2017-02-16 10:21:33','2017-02-16 10:21:33'),(2,'borrow_term','2592000','借阅时长',1,'2017-02-20 17:27:45','2017-02-20 17:27:47'),(3,'borrow_num','10','默认借阅数量',1,'2017-03-02 18:02:41','2017-03-02 18:02:43'),(4,'index_false','1','首页假数据开关（0：关，1：开）',1,'2017-03-03 13:15:21','2017-03-18 07:04:17');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -451,4 +450,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-10 12:13:49
+-- Dump completed on 2017-03-18 15:11:14
