@@ -29,8 +29,10 @@ class HomeController extends Controller
             $content->header(trans('admin::lang.index'));
             $content->description(trans('admin::lang.overview'));
 
+            //饼状图、雷达图
             $content->row(function ($row){
 
+                //饼状图
                 $row->column(6,function(Column $column) {
                     if (isset($this->configs['index_false'])) {
                         $pie_info = [
@@ -43,7 +45,7 @@ class HomeController extends Controller
                             ->select(DB::raw('id,type_name'))
                             ->where('parent_id', 0)
                             ->get();
-                        $pie_info = $pie_info->toArray();
+                        $pie_info = $this->object_array($pie_info);
 
                         //获取顶级分类下的所有分类id
                         foreach ($pie_info as &$v) {
@@ -62,6 +64,7 @@ class HomeController extends Controller
                     $column->append((new Box(trans('admin::lang.books_type_overview'),new Pie($pie_info)))->removable()->collapsable()->style('info'));
                 });
 
+                //雷达图
                 $row->column(6,function(Column $column) {
                     if (isset($this->configs['index_false'])) {
                         $sum = [400,600,600,600,600,600,600,600];
@@ -75,7 +78,7 @@ class HomeController extends Controller
                             ->select(DB::raw('id,type_name'))
                             ->where('parent_id', 0)
                             ->get();
-                        $pie_info = $pie_info->toArray();
+                        $pie_info = $this->object_array($pie_info);
 
                         //获取顶级分类下的所有分类id
                         foreach ($pie_info as &$v) {
@@ -102,139 +105,98 @@ class HomeController extends Controller
                 });
             });
 
+            //柱状图
             $content->row(function ($row) {
 
                 $row->column(12,function(Column $column) {
+
+                    $name = ["January", "February", "March", "April", "May", "June",
+                        "July","August","September","October","November","December"];
                     if (isset($this->configs['index_false'])) {
-                        $name = ["January", "February", "March", "April", "May", "June",
-                            "July","August","September","October","November","December"];
                         $data = [
-                                ['First', [40, 56, 67, 23, 10, 45, 78, 99, 80, 70,60,50]],
+                                ['First', [40, 56, 67, 23, 10, 45, 78, 99, 80, 70,  45, 40]],
                             ];
                     }else{
+                        $months[] = date('Y').'-00-00 00:00:00';
+                        for($i=1;$i<12;$i++){
+                            $months[] = date('Y-m-d H:i:s',strtotime('+1 month',strtotime($months[$i-1])));
+                        }
 
+                        $result = [];
+                        for($i=0;$i<12;$i++){
+                            $table = DB::table('borrow_info')
+                                ->where('created_at','>=',$months[$i]);
+                            if($i+1 != 12) $table->where('created_at','<',$months[$i+1]);
+                            $result[] = $table->count();
+                        }
+
+                        $data = [
+                            ['First',$result],
+                        ];
                     }
-                    $column->append((new Box(trans('admin::lang.monthly_borrow_num'), new Bar($name,$data)))->removable()->collapsable()->style('info'));
+
+                    $column->append((new Box(date('Y').' '.trans('admin::lang.monthly_borrow_num'), new Bar($name,$data)))->removable()->collapsable()->style('info'));
                 });
             });
 
+            //排行榜
             $content->row(function ($row) {
+                $size = 10;
+
+                //专业、年级、班级借阅榜
+                if(isset($this->configs['index_false'])){
+                    $major_headers = [trans('admin::lang.no'),trans('admin::lang.major'),trans('admin::lang.borrow_num')];
+                    $grade_headers = [trans('admin::lang.no'),trans('admin::lang.grade'),trans('admin::lang.borrow_num')];
+                    $class_headers = [trans('admin::lang.no'),trans('admin::lang.class'),trans('admin::lang.borrow_num')];
+
+                    $major_year = $major_month = $major_week =
+                    $grade_year = $grade_month = $grade_week =
+                    $class_year = $class_month = $class_week = [
+                        [1,'000','999'],
+                        [2,'111','888'],
+                        [3,'222','777'],
+                        [4,'333','666'],
+                        [5,'444','555'],
+                        [6,'555','444'],
+                        [7,'666','333'],
+                        [8,'777','222'],
+                        [9,'888','111'],
+                        [10,'999','000']
+                    ];
+
+                    $major_tab = new Tab();
+                    $major_tab->add(trans('admin::lang.week_list'),new Table($major_headers,$major_week));
+                    $major_tab->add(trans('admin::lang.month_list'),new Table($major_headers,$major_month));
+                    $major_tab->add(trans('admin::lang.year_list'),new Table($major_headers,$major_year));
+                    $major_tab->title(trans('admin::lang.major_lending_list'));
+
+                    $grade_tab = new Tab();
+                    $grade_tab->add(trans('admin::lang.week_list'),new Table($grade_headers,$grade_year));
+                    $grade_tab->add(trans('admin::lang.month_list'),new Table($grade_headers,$grade_month));
+                    $grade_tab->add(trans('admin::lang.year_list'),new Table($grade_headers,$grade_year));
+                    $grade_tab->title(trans('admin::lang.grade_lending_list'));
+
+                    $class_tab = new Tab();
+                    $class_tab->add(trans('admin::lang.week_list'),new Table($class_headers,$class_week));
+                    $class_tab->add(trans('admin::lang.month_list'),new Table($class_headers,$class_month));
+                    $class_tab->add(trans('admin::lang.year_list'),new Table($class_headers,$class_year));
+                    $class_tab->title(trans('admin::lang.class_lending_list'));
+                }
+                else {
+                    $major_tab = $this->getMGCRanking($size,'major');
+                    $grade_tab = $this->getMGCRanking($size,'grade');
+                    $class_tab = $this->getMGCRanking($size,'class');
+                }
+                $row->column(4,$major_tab);
+                $row->column(4,$grade_tab);
+                $row->column(4,$class_tab);
+
+                //个人阅读排行榜
                 $headers = [trans('admin::lang.no'),trans('admin::lang.username'),trans('admin::lang.borrow_num')];
-
-                $row->column(4,function(Column $column) use($headers){
-
-                    $personal_tabs = new Tab();
-                    $personal_year = $personal_month = $personal_week = [];
-                    if(isset($this->configs['index_false'])){
-                        $personal_year = $personal_month = $personal_week = [
-                            [1,'000','999'],
-                            [2,'111','888'],
-                            [3,'222','777'],
-                            [4,'333','666'],
-                            [5,'444','555'],
-                            [6,'555','444'],
-                            [7,'666','333'],
-                            [8,'777','222'],
-                            [9,'888','111'],
-                            [10,'999','000']
-                        ];
-                        $personal_month = [
-                            [1,'999','000'],
-                            [2,'888','111'],
-                            [3,'777','222'],
-                            [4,'666','333'],
-                            [5,'555','444'],
-                            [6,'444','555'],
-                            [7,'333','666'],
-                            [8,'222','777'],
-                            [9,'111','888'],
-                            [10,'000','999']
-                        ];
-                    }else{
-                        $start_time = date('Y-m',time());
-                        $personal_month = DB::table('borrow_info as bi')
-                            ->join('user_info as ui','ui.id','=','bi.user_id')
-                            ->select(DB::raw('ui.name,sum(bi.id) as borrow_num'))
-                            ->where('bi.created_at','>',$start_time)
-                            ->groupBy('bi.user_id')
-                            ->orderBy('borrow_num','desc')
-                            ->take(10)
-                            ->get();
-                        $personal_month = $this->object_array($personal_month);
-                        $js = 10;
-                        $cnt = count($personal_month);
-                        for($i = $js;$i>0;$i--){
-                            if($i <= $js-$cnt) {
-                                $one = array();
-                                $one['name'] = $one['borrow_num'] = '-';
-                                $personal_month[] = $one;
-                            }
-                            $personal_month[$js-$i] = [$js+1-$i] + $personal_month[$js-$i];
-                        }
-                        $start_time = date('Y',time());
-                        $personal_year = DB::table('borrow_info as bi')
-                            ->join('user_info as ui','ui.id','=','bi.user_id')
-                            ->select(DB::raw('ui.name,sum(bi.id) as borrow_num'))
-                            ->where('bi.created_at','>',$start_time)
-                            ->groupBy('bi.user_id')
-                            ->orderBy('borrow_num','desc')
-                            ->take(10)
-                            ->get();
-                        $cnt = count($personal_year);
-                        for($i = $js;$i>0;$i--){
-                            if($i <= $js-$cnt) {
-                                $one = array();
-                                $one['name'] = $one['borrow_num'] = '-';
-                                $personal_year[] = $one;
-                            }
-                            $personal_year[$js-$i] = [$js+1-$i] + $personal_year[$js-$i];
-                        }
-                    }
-                    $personal_tabs->add(trans('admin::lang.year_list'),new Table($headers,$personal_year));
-                    $personal_tabs->add(trans('admin::lang.month_list'),new Table($headers,$personal_month));
-                    $personal_tabs->title(trans('admin::lang.personal_lending_list'));
-                    $column->append($personal_tabs);
-
-
-                    $rows = [];
-                    if(isset($this->configs['index_false'])){
-                        $rows = [
-                            [1,'000','999'],
-                            [2,'111','888'],
-                            [3,'222','777'],
-                            [4,'333','666'],
-                            [5,'444','555'],
-                            [6,'555','444'],
-                            [7,'666','333'],
-                            [8,'777','222'],
-                            [9,'888','111'],
-                            [10,'999','000']
-                        ];
-                    }else{
-                        $rows = DB::table('borrow_info as bi')
-                            ->join('user_info as ui','ui.id','=','bi.user_id')
-                            ->select(DB::raw('ui.class,sum(bi.id) as borrow_num'))
-                            ->groupBy('ui.class')
-                            ->orderBy('borrow_num','desc')
-                            ->take(10)
-                            ->get();
-                        $js = 10;
-                        $cnt = count($rows);
-                        for($i = $js-$cnt;$i>0;$i--){
-                            if($i <= $js-$cnt) {
-                                $one = array();
-                                $one['class'] = $one['borrow_num'] = '-';
-                                $rows[] = $one;
-                            }
-                            $rows[$js-$i] = [$js+1-$i] + $rows[$js-$i];
-                        }
-                    }
-                    $column->append((new Box(trans('admin::lang.class_lending_list'), new Table($headers, $rows)))->style('info')->solid());
-                });
-
-                $rows = [];
+                $personal_tabs = new Tab();
+                $personal_year = $personal_month = $personal_week = [];
                 if(isset($this->configs['index_false'])){
-                    $rows = [
+                    $personal_year = $personal_month = $personal_week = [
                         [1,'000','999'],
                         [2,'111','888'],
                         [3,'222','777'],
@@ -247,62 +209,84 @@ class HomeController extends Controller
                         [10,'999','000']
                     ];
                 }else{
-                    $rows = DB::table('borrow_info as bi')
-                        ->join('user_info as ui','ui.id','=','bi.user_id')
-                        ->select(DB::raw('ui.major,sum(bi.id) as borrow_num'))
-                        ->groupBy('ui.major')
-                        ->orderBy('borrow_num','desc')
-                        ->take(10)
-                        ->get();
-                    $js = 10;
-                    $cnt = count($rows);
-                    for($i = $js;$i>0;$i--){
-                        if($i <= $js-$cnt) {
-                            $one = array();
-                            $one['major'] = $one['borrow_num'] = '-';
-                            $rows[] = $one;
-                        }
-                        $rows[$js-$i] = [$js+1-$i] + $rows[$js-$i];
-                    }
+                    $personal_year = $this->personal_ranking_data($size,date('Y',time()));
+                    $personal_month = $this->personal_ranking_data($size,date('Y-m',time()));
+                    $personal_week = $this->personal_ranking_data($size,date('Y-m-d',time()));
                 }
-                $row->column(4,(new Box(trans('admin::lang.major_lending_list'), new Table($headers, $rows)))->style('info')->solid());
-
-                $rows = [];
-                if(isset($this->configs['index_false'])){
-                    $rows = [
-                        [1,'000','999'],
-                        [2,'111','888'],
-                        [3,'222','777'],
-                        [4,'333','666'],
-                        [5,'444','555'],
-                        [6,'555','444'],
-                        [7,'666','333'],
-                        [8,'777','222'],
-                        [9,'888','111'],
-                        [10,'999','000']
-                    ];
-                }else{
-                    $rows = DB::table('borrow_info as bi')
-                        ->join('user_info as ui','ui.id','=','bi.user_id')
-                        ->select(DB::raw('ui.grade,sum(bi.id) as borrow_num'))
-                        ->groupBy('ui.grade')
-                        ->orderBy('borrow_num','desc')
-                        ->take(10)
-                        ->get();
-                    $js = 10;
-                    $cnt = count($rows);
-                    for($i = $js-$cnt;$i>0;$i--){
-                        if($i <= $js-$cnt) {
-                            $one = array();
-                            $one['grade'] = $one['borrow_num'] = '-';
-                            $rows[] = $one;
-                        }
-                        $rows[$js-$i] = [$js+1-$i] + $rows[$js-$i];
-                    }
-                }
-                $row->column(4,(new Box(trans('admin::lang.grade_lending_list'), new Table($headers, $rows)))->style('info')->solid());
+                $personal_tabs->add(trans('admin::lang.week_list'),new Table($headers,$personal_week));
+                $personal_tabs->add(trans('admin::lang.month_list'),new Table($headers,$personal_month));
+                $personal_tabs->add(trans('admin::lang.year_list'),new Table($headers,$personal_year));
+                $personal_tabs->title(trans('admin::lang.personal_lending_list'));
+                $row->column(4,$personal_tabs);
             });
         });
+    }
+
+    public function personal_ranking_data($size,$start_time){
+
+        $start_time = date('Y',time());
+        $personal = DB::table('borrow_info as bi')
+            ->join('user_info as ui','ui.id','=','bi.user_id')
+            ->select(DB::raw('ui.name,sum(bi.id) as borrow_num'))
+            ->where('bi.created_at','>',$start_time)
+            ->groupBy('bi.user_id')
+            ->orderBy('borrow_num','desc')
+            ->take($size)
+            ->get();
+        $personal = $this->object_array($personal);
+        $cnt = count($personal);
+        for($i = $size;$i>0;$i--){
+            if($i <= $size-$cnt) {
+                $one = array();
+                $one['name'] = $one['borrow_num'] = '-';
+                $personal[] = $one;
+            }
+            $personal[$size-$i] = [$size+1-$i] + $personal[$size-$i];
+        }
+        return $personal;
+    }
+
+    public function getMGCRanking($size,$key){
+        $headers = [trans('admin::lang.no'),trans('admin::lang.'.$key),trans('admin::lang.borrow_num')];
+
+        $year_time = date('Y',time());
+        $month_time = date('Y-m',time());
+        $week_time = date('Y-m-d',time());
+
+        $year_data     =   $this->MGC_ranking_data($size, $key, $year_time);
+        $month_data    =   $this->MGC_ranking_data($size, $key, $month_time);
+        $week_data     =   $this->MGC_ranking_data($size, $key, $week_time);
+
+        $tab = new Tab();
+        $tab->add(trans('admin::lang.week_list'),new Table($headers,$year_data));
+        $tab->add(trans('admin::lang.month_list'),new Table($headers,$month_data));
+        $tab->add(trans('admin::lang.year_list'),new Table($headers,$week_data));
+        $tab->title(trans('admin::lang.'.$key.'_lending_list'));
+        return $tab;
+    }
+
+    public function MGC_ranking_data($size,$key,$start_time){
+        $rows = DB::table('borrow_info as bi')
+            ->join('user_info as ui','ui.id','=','bi.user_id')
+            ->select(DB::raw('ui.'.$key.',sum(bi.id) as borrow_num'))
+            ->where('bi.created_at','>',$start_time)
+            ->groupBy('ui.'.$key)
+            ->orderBy('borrow_num','desc')
+            ->take($size)
+            ->get();
+        $rows = $this->object_array($rows);
+
+        $cnt = count($rows);
+        for($i = $size;$i>0;$i--){
+            if($i <= $size-$cnt) {
+                $one = array();
+                $one[$key] = '-';
+                $one['borrow_num'] = '-';
+                $rows[] = $one;
+            }
+            $rows[$size-$i] = [$size+1-$i] + $rows[$size-$i];
+        }
+        return $rows;
     }
 
     public function getSonIdById($id,&$ids){

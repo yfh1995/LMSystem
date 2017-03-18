@@ -104,7 +104,7 @@ class ConfigController extends Controller{
             $form->text('key', trans('admin::lang.key'))->rules('required');
             $form->text('value', trans('admin::lang.value'));
             $form->text('remarks', trans('admin::lang.remarks'));
-            $form->text('status', trans('admin::lang.enable_status'));
+            $form->switch('status', trans('admin::lang.enable_status'))->states(['on' => 1, 'off' => 0]);
 
             $form->display('created_at', trans('admin::lang.created_at'));
             $form->display('updated_at', trans('admin::lang.updated_at'));
