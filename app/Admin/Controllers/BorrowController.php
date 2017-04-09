@@ -19,6 +19,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Widgets\Table;
 use Encore\Admin\Form;
+use Illuminate\Support\Facades\Log;
 
 class BorrowController extends Controller{
 
@@ -51,8 +52,11 @@ class BorrowController extends Controller{
 
         $borrow_term = $this->configs['borrow_term'];
         $user_info = DB::table('user_info')->where('id_number',$params['id_number'])->first();
-        $book_info = DB::table('books_info')->where('book_number',$params['book_number'])->where('cur_total','>','0')->first();
-        if(!$user_info || !$book_info) return;
+        $book_info = DB::table('books_info')->where('book_number',$params['book_number'])->first();
+        if(!$user_info) return redirect()->back()->withErrors('未查询到此用户信息！');
+        if(!$book_info) return redirect()->back()->withErrors('未查询到此书籍信息！');
+        if($user_info->available_num<=0) return redirect()->back()->withErrors('您的借阅量已达到上限，请先归还已借书籍！');
+        if($book_info->cur_total<=0) return redirect()->back()->withErrors('此图书已无库存，请等待！');
 
         //开启事务
         DB::beginTransaction();
@@ -82,34 +86,32 @@ class BorrowController extends Controller{
 
     }
 
-    public function returnBook(Request $request){
-        $params = $request->all();
-
-        if(!isset($params['id']) || !$params['id']) return;
-
-        $borrow_info = DB::table('borrow_info')->where('id',$params['id'])->first();
-        if(!$borrow_info) return;
-
-        $rs = DB::table('borrow_info')->where('id',$params['id'])->update([
-            'status'    =>  2
-        ]);
-        if($rs === false) return;
-        else return redirect('/admin/borrow');
-    }
-
     public function compensate(Request $request){
         $params = $request->all();
 
-        if(!isset($params['id']) || !$params['id']) return;
+        if(!isset($params['id']) || !$params['id']) return redirect()->back()->withErrors('参数丢失或无效参数！');
 
         $borrow_info = DB::table('borrow_info')->where('id',$params['id'])->first();
-        if(!$borrow_info) return;
+        if(!$borrow_info) return redirect()->back()->withErrors('未查询到有此借阅信息！');
 
-        $rs = DB::table('borrow_info')->where('id',$params['id'])->update([
+        DB::beginTransaction();
+
+        //更新借阅信息
+        $rs_bi = DB::table('borrow_info')->where('id',$params['id'])->update([
             'status'    =>  1
         ]);
-        if(!$rs) return;
-        else return redirect('/admin/borrow');
+
+        //更新借阅者信息
+        $rs_ui = DB::table('user_info')->where('id',$borrow_info->user_id)->increment('available_num');
+
+        if($rs_bi === false || $rs_ui === false){
+            DB::rollback();
+            return redirect()->back()->withErrors('赔偿失败！');
+        }
+        else{
+            DB::commit();
+            return redirect('/admin/borrow');
+        }
     }
 
     public function form(){
@@ -138,6 +140,10 @@ class BorrowController extends Controller{
             $grid->end_time(trans('admin::lang.end_time'));
 
             $grid->rows(function($row){
+                if($row->id<100000000) {
+                    $row->actions('delete');
+                }
+
                 $row->actions()->add(function ($row) {
                     $str = '';
                     if($this->htmlToStatus($row->status) == 0) {
@@ -158,6 +164,48 @@ class BorrowController extends Controller{
 
             $grid->disableBatchDeletion();
         });
+    }
+
+    public function destroy($id){
+        //判断借阅信息状态，如果为在借状态则不可删除
+        $borrow_info = DB::table('borrow_info')->where('id',$id)->where('status','<>',0)->first();
+        if(!$borrow_info){
+            return redirect()->back()->withErrors('未找到借阅信息或借阅记录为在借状态！');
+        }
+
+        if ($this->form()->destroy($id)) {
+            return redirect('admin/books/');
+        }
+    }
+
+    public function returnBook(Request $request){
+        $params = $request->all();
+
+        if(!isset($params['id']) || !$params['id']) return;
+
+        $borrow_info = DB::table('borrow_info')->where(['id'=>$params['id'],'status'=>0])->first();
+        if(!$borrow_info) return redirect('/admin/borrow');
+
+        DB::beginTransaction();
+
+        //更新借阅信息状态
+        $rs_bi = DB::table('borrow_info')->where('id',$params['id'])->update([
+            'status'    =>  2
+        ]);
+
+        //更新借阅者信息
+        $rs_ui = DB::table('user_info')->where('id',$borrow_info->user_id)->increment('available_num');
+
+        //更新借阅书籍信息
+        $rs_bk = DB::table('books_info')->where('id',$borrow_info->book_id)->increment('cur_total');
+
+        if($rs_bi === false || $rs_ui === false || $rs_bk === false){
+            DB::rollback();
+            return;
+        } else{
+            DB::commit();
+            return redirect('/admin/borrow');
+        }
     }
 
     public function getLastSons($type_id,&$type_ids){

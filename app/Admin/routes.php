@@ -22,7 +22,7 @@ $router->group(['middleware' => 'admin.auth'],function($router){
         //用户管理
         'users'     =>  'UsersController',
         //系统配置
-        'config'   =>  'ConfigController'
+        'config'    =>  'ConfigController',
     ]);
 
     //图书借阅管理
@@ -36,14 +36,8 @@ $router->group(['middleware' => 'admin.auth'],function($router){
     $router->get('borrow/return','BorrowController@returnBook');
     //赔偿图书
     $router->get('borrow/compensate','BorrowController@compensate');
-
-    //=====================================================
-    //==========                     ======================
-    //==========      用户管理        ======================
-    //==========                     ======================
-    //=====================================================
-    //用户列表
-//    $router->get('users','UsersController@index');
+    //删除图书
+    $router->delete('borrow/{id}','BorrowController@destroy');
 
 });
 

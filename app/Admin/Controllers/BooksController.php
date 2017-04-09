@@ -146,7 +146,7 @@ class BooksController extends Controller{
 
             $grid->filter(function($filter){
 
-                $filter->like('books.book_number',trans('admin::lang.book_number'));
+                $filter->like('book_number',trans('admin::lang.book_number'));
             });
 
             $grid->paginate($size);
